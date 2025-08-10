@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">RFIDCartApp</string>
+    <string name="btn_enter">Acceder</string>
+    <string name="btn_enter">Acceder</string>
+    <string name="cart">Carrito de la compra</string>
+    <string name="settings">Configuración</string>
+</resources>
