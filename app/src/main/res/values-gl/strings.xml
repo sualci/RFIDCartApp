@@ -3,4 +3,11 @@
     <string name="btn_enter">Acceder</string>
     <string name="cart">Carro da compra</string>
     <string name="settings">Configuración</string>
+    <string name="input_user_name">Nome do usuario</string>
+    <string name="btn_save">Gardar</string>
+    <string name="btn_saving">Gardando</string>
+    <string name="btn_edit">Editar</string>
+    <string name="allergies">Alérxenos alimenticios</string>
+    <string name="configuration">Configuración</string>
+    <string name="allergies_cereals">Cereais con gluten</string>
 </resources>

@@ -3,8 +3,6 @@ package com.tfm.rfidcartapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
@@ -15,16 +13,19 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.tfm.rfidcartapp.ui.cart.CartScreen
 import com.tfm.rfidcartapp.ui.theme.RFIDCartAppTheme
+import com.yourpkg.ui.settings.SettingsRoute
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +55,7 @@ fun MainScreen(startDestination: String) {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("cart") { CartScreen() }
-            composable("settings") { SettingsScreen() }
+            composable("settings") { SettingsRoute() }
         }
     }
 }
@@ -87,16 +88,4 @@ fun BottomNavigationBar(navController: NavController) {
 
 data class BottomNavItem(val label: String, val route: String, val icon: ImageVector)
 
-@Composable
-fun CartScreen() {
-    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(stringResource(id = R.string.cart))
-    }
-}
 
-@Composable
-fun SettingsScreen() {
-    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(stringResource(id = R.string.settings))
-    }
-}
