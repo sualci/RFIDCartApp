@@ -62,8 +62,8 @@ fun MainScreen(startDestination: String) {
 @Composable
 fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
-        BottomNavItem(stringResource(id = R.string.cart), "cart", Icons.Filled.ShoppingCart),
-        BottomNavItem(stringResource(id = R.string.settings), "settings", Icons.Filled.Settings)
+        BottomNavItem(stringResource(id = R.string.cart_title), "cart", Icons.Filled.ShoppingCart),
+        BottomNavItem(stringResource(id = R.string.settings_title), "settings", Icons.Filled.Settings)
     )
     NavigationBar {
         val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route

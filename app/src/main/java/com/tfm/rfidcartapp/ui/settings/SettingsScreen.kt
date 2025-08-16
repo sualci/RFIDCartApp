@@ -44,8 +44,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.tfm.rfidcartapp.R
 import com.tfm.rfidcartapp.data.model.Allergens
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -90,7 +92,7 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Configuración") },
+                title = { Text(stringResource(id = R.string.settings_title)) },
                 actions = {
                     IconButton(onClick = {
                         if (isEditing) {
@@ -102,7 +104,7 @@ fun SettingsScreen(
                     }) {
                         Icon(
                             imageVector = if (isEditing) Icons.Filled.Close else Icons.Filled.Edit,
-                            contentDescription = if (isEditing) "Cancelar" else "Editar"
+                            contentDescription = (if (isEditing) stringResource(id = R.string.btn_cancel) else stringResource(id = R.string.btn_edit))
                         )
                     }
                 }
@@ -140,7 +142,7 @@ fun SettingsScreen(
             OutlinedTextField(
                 value = userName,
                 onValueChange = { if (isEditing) onNameChange(it) },
-                label = { Text("Nombre de usuario") },
+                label = { Text(stringResource(id = R.string.settings_username)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 enabled = isEditing,
@@ -154,7 +156,7 @@ fun SettingsScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    "Alérgenos alimentarios",
+                    stringResource(id = R.string.allergens_title),
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.weight(1f)
                 )
@@ -180,7 +182,7 @@ fun SettingsScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(allergen.label, modifier = Modifier.weight(1f))
+                        Text( text = stringResource(id = allergen.labelRes), modifier = Modifier.weight(1f))
                         Checkbox(
                             checked = allergen.id in selected,
                             onCheckedChange = {
@@ -207,7 +209,7 @@ fun SettingsScreen(
                         )
                     }
                     Spacer(Modifier.width(8.dp))
-                    Text(if (saving) "Guardando..." else "Guardar")
+                    Text(if (saving) stringResource(id = R.string.msg_saving) else stringResource(id = R.string.btn_save))
                 }
             }
         }
