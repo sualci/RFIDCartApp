@@ -20,6 +20,7 @@ import com.tfm.rfidcartapp.MainActivity
 import com.tfm.rfidcartapp.R
 import com.tfm.rfidcartapp.ui.theme.RFIDCartAppTheme
 
+// TODO: check splashScreen class https://developer.android.com/develop/ui/views/launch/splash-screen?hl=es-419
 class SplashActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +29,7 @@ class SplashActivity : ComponentActivity() {
                 SplashScreen(
                     onStartClick = {
                         startActivity(Intent(this, MainActivity::class.java).apply {
-                            putExtra("startDestination", "settings")
+                            putExtra("startDestination", "cart")
                             }
                         )
                         finish()

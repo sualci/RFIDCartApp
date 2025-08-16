@@ -1,8 +1,9 @@
-package com.tfm.rfidcartapp.data.model
+package com.tfm.rfidcartapp.ui.settings
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.tfm.rfidcartapp.data.model.Allergens
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update

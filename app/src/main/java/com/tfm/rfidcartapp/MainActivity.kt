@@ -11,7 +11,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -22,7 +21,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.tfm.rfidcartapp.ui.cart.CartScreen
+import com.tfm.rfidcartapp.ui.cart.CartRoute
 import com.tfm.rfidcartapp.ui.theme.RFIDCartAppTheme
 import com.yourpkg.ui.settings.SettingsRoute
 
@@ -54,7 +53,7 @@ fun MainScreen(startDestination: String) {
             startDestination = startDestination,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable("cart") { CartScreen() }
+            composable("cart") { CartRoute() }
             composable("settings") { SettingsRoute() }
         }
     }
@@ -78,8 +77,7 @@ fun BottomNavigationBar(navController: NavController) {
                         restoreState = true
                     }
                 },
-                icon = { Icon(item.icon, contentDescription = item.label) },
-                label = { Text(item.label) }
+                icon = { Icon(item.icon, contentDescription = item.label) }
             )
 
         }

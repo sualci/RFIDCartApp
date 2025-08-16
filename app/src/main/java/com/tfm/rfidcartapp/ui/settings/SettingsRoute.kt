@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.collectAsState
-import com.tfm.rfidcartapp.data.model.SettingsViewModel
+import com.tfm.rfidcartapp.ui.settings.SettingsViewModel
 import com.tfm.rfidcartapp.ui.settings.SettingsScreen
 
 @Composable
