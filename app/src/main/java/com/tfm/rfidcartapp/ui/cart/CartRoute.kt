@@ -3,6 +3,7 @@ package com.tfm.rfidcartapp.ui.cart
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -14,8 +15,10 @@ import kotlinx.coroutines.flow.map
 
 @Composable
 fun CartRoute(
-    repository: SettingsRepository = rememberRepository()
+    repository: SettingsRepository = rememberRepository(),
+    cartViewModel: CartViewModel
 ) {
+    val items by cartViewModel.items.collectAsState()
     var userAllergens by remember { mutableStateOf<Set<String>>(emptySet()) }
 
     LaunchedEffect(Unit) {
@@ -24,12 +27,12 @@ fun CartRoute(
             .collectLatest { userAllergens = it }
     }
 
-
     CartScreen(
-        items = cartItems,
+        items = items,
         userAllergens = userAllergens
     )
 }
+
 
 @Composable
 private fun rememberRepository(): SettingsRepository {

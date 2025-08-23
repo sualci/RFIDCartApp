@@ -34,9 +34,10 @@ import com.tfm.rfidcartapp.ui.cart.CartRoute
 import com.yourpkg.ui.settings.SettingsRoute
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.ui.unit.dp
+import com.tfm.rfidcartapp.ui.cart.CartViewModel
 
 @Composable
-fun AppNav() {
+fun AppNav(cartViewModel: CartViewModel) {
     val navController = rememberNavController()
     var isLoggedIn by rememberSaveable { mutableStateOf(false) }
 
@@ -74,7 +75,7 @@ fun AppNav() {
                     startDestination = "cart",
                     modifier = Modifier.padding(innerPadding)
                 ) {
-                    composable("cart") { CartRoute() }
+                    composable("cart") { CartRoute(cartViewModel = cartViewModel) }
                     composable("settings") { SettingsRoute() }
                 }
             }

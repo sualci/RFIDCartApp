@@ -1,6 +1,5 @@
 package com.tfm.rfidcartapp.ui.cart
 
-import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -30,29 +29,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.tfm.rfidcartapp.R
-import com.tfm.rfidcartapp.data.model.Allergens
 import com.tfm.rfidcartapp.data.model.CartItem
-import com.tfm.rfidcartapp.data.model.Product
+import com.tfm.rfidcartapp.util.AllergenLabels
 import com.tfm.rfidcartapp.util.toPrice
-
-val allProducts = listOf(
-    Product("Whole Milk", "DairyBest", 1.20, setOf("milk")),
-    Product("Wheat Bread", "Baker's", 1.50, setOf("gluten")),
-    Product("Peanut Butter", "Nutty", 2.80, setOf("peanuts")),
-    Product("Chocolate Bar", "SweetCo", 1.00, setOf("milk", "soybean")),
-    Product("Cheddar Cheese", "Cheesy", 2.50, setOf("milk")),
-    Product("Almond Cookies", "CookieHouse", 3.00, setOf("treenuts", "gluten")),
-    Product("Orange Juice", "FreshSqueeze", 2.00, emptySet()),
-    Product("Yogurt", "Creamy", 1.10, setOf("milk")),
-    Product("Shrimp Pack", "SeaFoodies", 4.50, setOf("crustaceans")),
-    Product("Egg Pasta", "PastaLover", 1.90, setOf("eggs", "gluten"))
-)
-val cartItems = listOf(
-    CartItem(allProducts[0], quantity = 2), // 2 x Milk
-    CartItem(allProducts[2], quantity = 1), // 1 x Peanut Butter
-    CartItem(allProducts[4], quantity = 3), // 3 x Cheddar Cheese
-    CartItem(allProducts[7], quantity = 2)  // 2 x Yogurt
-)
 
 enum class AllergenRisk { NONE, LOW, MEDIUM, HIGH }
 
@@ -173,15 +152,24 @@ fun CartScreen(
                         }
 
                         Spacer(Modifier.height(4.dp))
-                        Text(stringResource(id = R.string.product_brand) +": ${p.brand}", style = MaterialTheme.typography.bodySmall)
+                        Text(
+                            stringResource(id = R.string.product_brand) + ": ${p.brand}",
+                            style = MaterialTheme.typography.bodySmall
+                        )
 
                         Spacer(Modifier.height(4.dp))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(stringResource(id = R.string.product_price) + ": ${p.price.toPrice()}", style = MaterialTheme.typography.bodyMedium)
-                            Text(stringResource(id = R.string.product_subtotal)  + ": ${lineTotal.toPrice()}", fontWeight = FontWeight.SemiBold)
+                            Text(
+                                stringResource(id = R.string.product_price) + ": ${p.price.toPrice()}",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                stringResource(id = R.string.product_subtotal) + ": ${lineTotal.toPrice()}",
+                                fontWeight = FontWeight.SemiBold
+                            )
                         }
 
                         // Notable allergen chip + full list text
@@ -192,14 +180,21 @@ fun CartScreen(
                             notableId?.let {
                                 AssistChip(
                                     onClick = { /* no-op */ },
-                                    label = { Text(stringResource(id = R.string.product_allergens)  +": ${ allergenLabel(context, it)}") },
+                                    label = {
+                                        Text(
+                                            stringResource(id = R.string.product_allergens) + ": ${
+                                                AllergenLabels.labelFor(context, it)
+                                            }"
+                                        )
+                                    },
                                 )
                                 Spacer(Modifier.height(6.dp))
                             }
 
-                            val allAllergens = p.allergens.joinToString(", ") { allergenLabel(context, it) }
+                            val allAllergens =
+                                AllergenLabels.labelsFor(context, p.allergens).joinToString(", ")
                             Text(
-                                text = stringResource(id = R.string.product_allergens_all)+ ": " + allAllergens,
+                                text = stringResource(id = R.string.product_allergens_all) + ": " + allAllergens,
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.error
                             )
@@ -210,7 +205,4 @@ fun CartScreen(
         }
     }
 }
-fun allergenLabel(context: Context, id: String): String {
-    val resId = Allergens.all.firstOrNull { it.id == id }?.labelRes
-    return resId?.let { context.getString(it) } ?: id
-}
+
