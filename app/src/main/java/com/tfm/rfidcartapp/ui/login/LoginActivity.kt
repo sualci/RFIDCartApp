@@ -1,10 +1,9 @@
-package com.tfm.rfidcartapp.ui.splash
+package com.tfm.rfidcartapp.ui.login
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
@@ -13,24 +12,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.tfm.rfidcartapp.MainActivity
+import com.tfm.rfidcartapp.ui.main.MainActivity
 import com.tfm.rfidcartapp.R
 import com.tfm.rfidcartapp.ui.theme.RFIDCartAppTheme
 
-// TODO: check splashScreen class https://developer.android.com/develop/ui/views/launch/splash-screen?hl=es-419
-class SplashActivity : ComponentActivity() {
+class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             RFIDCartAppTheme {
-                SplashScreen(
+                LoginScreen(
                     onStartClick = {
                         startActivity(Intent(this, MainActivity::class.java).apply {
                             putExtra("startDestination", "cart")
-                            }
+                        }
                         )
                         finish()
                     }
@@ -41,24 +38,16 @@ class SplashActivity : ComponentActivity() {
 }
 
 @Composable
-fun SplashScreen(onStartClick: () -> Unit) {
+fun LoginScreen(onStartClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFE0F2E9))
-            .padding(16.dp),
+            .padding(24.dp),
         contentAlignment = Alignment.Center
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Image(
-                painter = painterResource(id = R.drawable.shop_cart),
-                contentDescription = "App Logo",
-                modifier = Modifier.size(120.dp)
-            )
-            Spacer(modifier = Modifier.height(24.dp))
-            Button(onClick = onStartClick) {
-                Text(stringResource(id = R.string.btn_enter))
-            }
+        Button(onClick = onStartClick) {
+            Text(stringResource(id = R.string.btn_enter))
         }
     }
 }
