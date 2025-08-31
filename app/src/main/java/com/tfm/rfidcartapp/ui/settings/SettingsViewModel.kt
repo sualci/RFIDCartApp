@@ -29,7 +29,6 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
             repo.data.collect { stored ->
                 _uiState.update {
                     it.copy(
-                        userName = stored.userName,
                         selectedAllergens = stored.allergens,
                         loading = false,
                         message = null
@@ -37,10 +36,6 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
         }
-    }
-
-    fun onNameChange(newName: String) {
-        _uiState.update { it.copy(userName = newName, message = null) }
     }
 
     fun onToggleAllergen(id: String) {
@@ -63,7 +58,7 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
         val snapshot = _uiState.value
         viewModelScope.launch {
             _uiState.update { it.copy(saving = true, message = null) }
-            repo.save(snapshot.userName, snapshot.selectedAllergens)
+            repo.save( snapshot.selectedAllergens)
             _uiState.update { it.copy(saving = false, message = "Guardado") }
         }
     }

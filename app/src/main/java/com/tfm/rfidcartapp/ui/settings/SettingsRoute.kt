@@ -14,11 +14,9 @@ fun SettingsRoute(
     val state by vm.uiState.collectAsState()
 
     SettingsScreen(
-        userName = state.userName,
         selected = state.selectedAllergens,
         loading = state.loading,
         saving = state.saving,
-        onNameChange = vm::onNameChange,
         onToggle = vm::onToggleAllergen,
         onSave = vm::save,
         onSelectAll = vm::selectAll,
