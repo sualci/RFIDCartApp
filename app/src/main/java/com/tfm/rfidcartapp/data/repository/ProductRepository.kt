@@ -15,6 +15,14 @@ val allProducts = listOf(
     Product("P-1010", "Tallarines", "PastaR", 1.90, setOf("eggs", "gluten"))
 )
 
+val tagToProductId: Map<String, String> = mapOf(
+    "E28069150000401D63E6F562" to "P-1001",
+    "E28069150000401D63E6F962" to "P-1001",
+    "E28069150000401D63E6ED62" to "P-1003",
+    "E28069150000501D63E6E962" to "P-1004",
+    "E28069150000401D63E6ED62" to "P-1005"
+)
+
 object ProductRepository {
     fun getById(id: String): Product? =
         allProducts.firstOrNull { it.id == id }

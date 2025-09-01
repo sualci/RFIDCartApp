@@ -14,4 +14,5 @@ object AllergenLabels {
 
     fun labelsFor(context: Context, ids: Iterable<String>): List<String> =
         ids.map { labelFor(context, it) }
+
 }
