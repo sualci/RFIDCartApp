@@ -9,7 +9,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.tfm.rfidcartapp"
+        applicationId = "com.tfm.rfidcartapp.nfc"
         minSdk = 24
         targetSdk = 35
         versionCode = 1

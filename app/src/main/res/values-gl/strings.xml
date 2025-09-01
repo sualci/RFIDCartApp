@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RFIDCartApp</string>
+    <string name="app_name">NFCCartApp</string>
     <string name="btn_enter">Acceder</string>
     <string name="cart_title">Carro da compra</string>
     <string name="settings_title">Configuración</string>
