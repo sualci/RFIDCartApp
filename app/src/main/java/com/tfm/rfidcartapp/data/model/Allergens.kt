@@ -3,11 +3,13 @@ package com.tfm.rfidcartapp.data.model
 import androidx.annotation.StringRes
 import com.tfm.rfidcartapp.R
 
+// Obxecto singleton que contén a lista de todas as alerxias soportadas pola aplicación
 data class AllergenOption(
     val id: String,
     @StringRes val labelRes: Int
 )
-
+// Lista estática con todas as opcións de alerxias dispoñibles
+// Cada elemento é un AllergenOption co seu id interno e o recurso de texto asociado
 object Allergens {
     val all = listOf(
         AllergenOption("gluten", R.string.allergen_gluten),

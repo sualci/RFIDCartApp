@@ -49,33 +49,35 @@ import com.tfm.rfidcartapp.data.model.Allergens
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    selected: Set<String>,
-    loading: Boolean,
-    saving: Boolean,
-    onToggle: (String) -> Unit,
-    onSave: () -> Unit,
-    onSelectAll: () -> Unit,
-    onClearAll: () -> Unit
+    selected: Set<String>, // Conjunto de alérgenos seleccionados
+    loading: Boolean,      // Estado de carga inicial
+    saving: Boolean,       // Estado de guardado
+    onToggle: (String) -> Unit, // Acción al marcar/desmarcar un alérgeno
+    onSave: () -> Unit,         // Acción al pulsar "Guardar"
+    onSelectAll: () -> Unit,    // Acción para seleccionar todos los alérgenos
+    onClearAll: () -> Unit      // Acción para limpiar selección
 ) {
     val focus = LocalFocusManager.current
-    var isEditing by rememberSaveable { mutableStateOf(false) }
+    var isEditing by rememberSaveable { mutableStateOf(false) } // Controla si se está editando
 
-
+    // Estado para mostrar snackbars
     val snackbarHostState = remember { SnackbarHostState() }
     var wasSaving by remember { mutableStateOf(false) }
+
+    // Efecto que detecta cuando se termina de guardar
     LaunchedEffect(saving) {
         if (wasSaving && !saving) {
-
             isEditing = false
             focus.clearFocus()
             snackbarHostState.showSnackbar(
-                message = "Guardado",
+                message = "Guardado", // Mensaje de confirmación
                 duration = SnackbarDuration.Short
             )
         }
         wasSaving = saving
     }
 
+    // Control del switch "Seleccionar todo"
     var selectAll by remember(selected) {
         mutableStateOf(selected.size == Allergens.all.size)
     }
@@ -88,6 +90,7 @@ fun SettingsScreen(
             TopAppBar(
                 title = { Text(stringResource(id = R.string.settings_title)) },
                 actions = {
+                    // Botón para activar/desactivar modo edición
                     IconButton(onClick = {
                         if (isEditing) {
                             focus.clearFocus()
@@ -104,11 +107,12 @@ fun SettingsScreen(
                 }
             )
         },
+        // Host para mostrar snackbars (alertas en la parte inferior)
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState) { data ->
                 Snackbar(
                     snackbarData = data,
-                    containerColor = Color(0xFF2E7D32), // verde
+                    containerColor = Color(0xFF2E7D32), // Verde personalizado
                     contentColor = Color.White,
                     actionColor = Color.White
                 )
@@ -116,6 +120,7 @@ fun SettingsScreen(
         }
     ) { innerPadding ->
 
+        // Si está cargando, mostrar un loader centrado
         if (loading) {
             Box(
                 modifier = Modifier
@@ -126,6 +131,7 @@ fun SettingsScreen(
             return@Scaffold
         }
 
+        // Contenido principal
         Column(
             modifier = Modifier
                 .padding(innerPadding)
@@ -133,6 +139,7 @@ fun SettingsScreen(
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // Fila superior con título + switch seleccionar todo
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -154,6 +161,7 @@ fun SettingsScreen(
                 )
             }
 
+            // Lista de alérgenos con checkboxes
             LazyColumn(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -164,7 +172,10 @@ fun SettingsScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text( text = stringResource(id = allergen.labelRes), modifier = Modifier.weight(1f))
+                        Text(
+                            text = stringResource(id = allergen.labelRes),
+                            modifier = Modifier.weight(1f)
+                        )
                         Checkbox(
                             checked = allergen.id in selected,
                             onCheckedChange = {
@@ -175,6 +186,8 @@ fun SettingsScreen(
                     }
                 }
             }
+
+            // Botón guardar (solo en modo edición)
             if (isEditing) {
                 Button(
                     onClick = {
@@ -191,7 +204,10 @@ fun SettingsScreen(
                         )
                     }
                     Spacer(Modifier.width(8.dp))
-                    Text(if (saving) stringResource(id = R.string.msg_saving) else stringResource(id = R.string.btn_save))
+                    Text(
+                        if (saving) stringResource(id = R.string.msg_saving)
+                        else stringResource(id = R.string.btn_save)
+                    )
                 }
             }
         }

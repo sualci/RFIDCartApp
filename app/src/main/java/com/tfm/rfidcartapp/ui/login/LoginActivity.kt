@@ -23,12 +23,13 @@ class LoginActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             RFIDCartAppTheme {
+                // Pantalla de login con botón para entrar
                 LoginScreen(
                     onStartClick = {
+                        // Al pulsar: abrir MainActivity y cerrar LoginActivity
                         startActivity(Intent(this, MainActivity::class.java).apply {
-                            putExtra("startDestination", "cart")
-                        }
-                        )
+                            putExtra("startDestination", "cart") // arranca en carrito
+                        })
                         finish()
                     }
                 )
@@ -39,15 +40,16 @@ class LoginActivity : ComponentActivity() {
 
 @Composable
 fun LoginScreen(onStartClick: () -> Unit) {
+    // Pantalla simple con un botón centrado
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFE0F2E9))
+            .background(Color(0xFFE0F2E9)) // color de fondo verde claro
             .padding(24.dp),
         contentAlignment = Alignment.Center
     ) {
         Button(onClick = onStartClick) {
-            Text(stringResource(id = R.string.btn_enter))
+            Text(stringResource(id = R.string.btn_enter)) // texto del botón
         }
     }
 }

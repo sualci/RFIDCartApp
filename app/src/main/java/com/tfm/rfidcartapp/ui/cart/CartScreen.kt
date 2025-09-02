@@ -33,34 +33,38 @@ import com.tfm.rfidcartapp.data.model.CartItem
 import com.tfm.rfidcartapp.util.AllergenLabels
 import com.tfm.rfidcartapp.util.toPrice
 
+// Nivel de riesgo por alérgenos
 enum class AllergenRisk { NONE, LOW, MEDIUM, HIGH }
 
+// Resultado de la evaluación de riesgo de un producto
 data class RiskAssessment(
     val risk: AllergenRisk,
-    val notableAllergenId: String? // the most notable matched allergen id (by priority)
+    val notableAllergenId: String? // alérgeno más relevante según prioridad
 )
 
-// Lower number = higher priority (more "notable")
+// Prioridad de cada alérgeno (número menor = más importante)
 private val ALLERGEN_PRIORITY: Map<String, Int> = mapOf(
-    "cacahuetes" to 0,
+    "cacahuetes" to 1,
     "frutos_cascara" to 1,
-    "crustaceos" to 2,
-    "moluscos" to 3,
-    "pescado" to 4,
-    "huevos" to 5,
-    "leche" to 6,
-    "gluten" to 7,
-    "soja" to 8,
-    "sesamo" to 9,
-    "apio" to 10,
-    "mostaza" to 11,
-    "altramuces" to 12,
-    "sulfitos" to 13
+    "crustaceos" to 1,
+    "moluscos" to 1,
+    "pescado" to 1,
+    "huevos" to 1,
+    "leche" to 1,
+    "gluten" to 1,
+    "soja" to 1,
+    "sesamo" to 1,
+    "apio" to 1,
+    "mostaza" to 1,
+    "altramuces" to 1,
+    "sulfitos" to 1
 )
 
+// Devuelve la prioridad de un alérgeno, o valor máximo si no está definido
 private fun priorityOf(id: String): Int =
     ALLERGEN_PRIORITY[id] ?: Int.MAX_VALUE
 
+// Evalúa el riesgo de un producto comparando sus alérgenos con los del usuario
 fun assessRisk(productAllergens: Set<String>, userAllergens: Set<String>): RiskAssessment {
     val matches = productAllergens.intersect(userAllergens)
     if (matches.isEmpty()) return RiskAssessment(AllergenRisk.NONE, null)
@@ -74,11 +78,12 @@ fun assessRisk(productAllergens: Set<String>, userAllergens: Set<String>): RiskA
     return RiskAssessment(risk, notable)
 }
 
+// Devuelve un color de fondo según el nivel de riesgo
 fun riskColor(risk: AllergenRisk): Color = when (risk) {
     AllergenRisk.NONE -> Color.Unspecified
-    AllergenRisk.LOW -> Color(0xFFFFF9C4)    // light yellow
-    AllergenRisk.MEDIUM -> Color(0xFFFFE0B2) // light orange
-    AllergenRisk.HIGH -> Color(0xFFFFCDD2)   // light red
+    AllergenRisk.LOW -> Color(0xFFFFF9C4)    // amarillo claro
+    AllergenRisk.MEDIUM -> Color(0xFFFFE0B2) // naranja claro
+    AllergenRisk.HIGH -> Color(0xFFFFCDD2)   // rojo claro
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -87,8 +92,10 @@ fun CartScreen(
     items: List<CartItem>,
     userAllergens: Set<String>
 ) {
+    // Calcula el precio total del carrito
     val totalPrice = items.sumOf { it.product.price * it.quantity }
 
+    // Estructura principal con barra superior y barra inferior
     Scaffold(
         topBar = {
             TopAppBar(
@@ -116,6 +123,7 @@ fun CartScreen(
         }
     ) { innerPadding ->
         val context = LocalContext.current
+        // Lista desplazable con todos los items del carrito
         LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
@@ -127,9 +135,11 @@ fun CartScreen(
                 val p = item.product
                 val lineTotal = p.price * item.quantity
 
+                // Evaluación de riesgo de alérgenos para este producto
                 val assessment = assessRisk(p.allergens, userAllergens)
                 val bg = riskColor(assessment.risk)
 
+                // Tarjeta visual para cada producto
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = bg),
@@ -137,7 +147,7 @@ fun CartScreen(
                 ) {
                     Column(modifier = Modifier.padding(12.dp)) {
 
-                        // Title + quantity
+                        // Nombre del producto y cantidad
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -158,6 +168,7 @@ fun CartScreen(
                         )
 
                         Spacer(Modifier.height(4.dp))
+                        // Precio unitario y subtotal
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
@@ -172,7 +183,7 @@ fun CartScreen(
                             )
                         }
 
-                        // Notable allergen chip + full list text
+                        // Muestra chip con el alérgeno más notable y lista completa
                         val notableId = assessment.notableAllergenId
                         if (p.allergens.isNotEmpty()) {
                             Spacer(Modifier.height(8.dp))

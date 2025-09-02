@@ -4,6 +4,7 @@ import android.util.Log
 import com.hivemq.client.mqtt.MqttClient
 import com.hivemq.client.mqtt.datatypes.MqttQos
 import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient
+
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -32,6 +33,7 @@ class MqttService(
     )
     val incoming: SharedFlow<String> = _incoming
 
+    // Conecta al broker MQTT y se suscribe al tópico indicado, emitiendo los mensajes recibidos en _incoming
     fun connectAndSubscribe(topic: String = "r2000/tags") {
         client.connect()
             .whenComplete { _, err ->
@@ -56,6 +58,7 @@ class MqttService(
             }
     }
 
+    // Desconecta el cliente MQTT y cancela la coroutine scope asociada
     fun disconnect() {
         try {
             client.disconnect()

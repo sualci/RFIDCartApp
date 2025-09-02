@@ -24,19 +24,24 @@ fun CartRoute(
     repository: SettingsRepository = rememberRepository(),
     cartViewModel: CartViewModel = viewModel()
 ) {
+    // Estado de los ítems del carrito (se actualiza automáticamente)
     val items by cartViewModel.items.collectAsState()
+
+    // Estado local con los alérgenos configurados por el usuario
     var userAllergens by remember { mutableStateOf<Set<String>>(emptySet()) }
 
+    // Efecto lanzado al inicio: escuchar cambios en las preferencias (DataStore)
     LaunchedEffect(Unit) {
         repository.data.map { it.allergens }.collectLatest { userAllergens = it }
     }
 
-    // Create MQTT service bound to the ViewModel's scope
+    // Crear servicio MQTT ligado al scope del ViewModel
     val mqttService = remember { MqttService(cartViewModel.viewModelScope) }
 
+    // Efecto lanzado al inicio: conectar y suscribirse a MQTT
     LaunchedEffect(Unit) {
         mqttService.connectAndSubscribe(topic = "r2000/tags")
-        // Collect payloads and sync cart
+        // Recibir mensajes MQTT y sincronizar el carrito
         mqttService.incoming.collectLatest { payload ->
             runCatching {
                 val msg = Json.decodeFromString<MqttTagMessage>(payload)
@@ -45,14 +50,17 @@ fun CartRoute(
         }
     }
 
+    // Asegura desconexión limpia de MQTT cuando se destruya el Composable
     DisposableEffect(Unit) {
         onDispose { mqttService.disconnect() }
     }
 
+    // Dibuja la pantalla del carrito con los ítems y alérgenos del usuario
     CartScreen(items = items, userAllergens = userAllergens)
 }
 
 @Composable
+// Crea y recuerda el repositorio de configuración (SettingsRepository)
 private fun rememberRepository(): SettingsRepository {
     val ctx: Context = LocalContext.current
     return remember(ctx) { SettingsRepository(ctx) }

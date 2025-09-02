@@ -31,43 +31,44 @@ import java.util.Locale
 
 class MainActivity : ComponentActivity() {
 
-    private val cartViewModel: CartViewModel by viewModels() // <- una sola instancia
-    private lateinit var tts: TextToSpeech
+    // ViewModel del carrito (una sola instancia en toda la actividad)
+    private val cartViewModel: CartViewModel by viewModels()
+    private lateinit var tts: TextToSpeech // motor de texto a voz
 
-    private lateinit var speaker: CartSpeaker
+    private lateinit var speaker: CartSpeaker // clase que gestiona los avisos hablados
 
     @Volatile
-    private var userAllergens: Set<String> = emptySet()
-
+    private var userAllergens: Set<String> = emptySet() // alérgenos configurados por el usuario
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        installSplashScreen()
-        ensureNotificationPermission()
+        installSplashScreen() // muestra pantalla de splash
+        ensureNotificationPermission() // pide permiso de notificaciones si es necesario
 
-        // Init TTS
+        // Inicializa el motor de texto a voz (TTS)
         tts = TextToSpeech(this) { status ->
             if (status == TextToSpeech.SUCCESS) {
-                tts.language = Locale.getDefault()
+                tts.language = Locale.getDefault() // configura idioma por defecto
             }
         }
 
-        // inicializar el speaker pasando el TTS y un acceso a los alérgenos del usuario
+        // Inicializa el speaker con TTS y acceso a los alérgenos del usuario
         speaker = CartSpeaker(
-            context = this, tts = tts, userAllergens = { userAllergens })
+            context = this, tts = tts, userAllergens = { userAllergens }
+        )
 
-
-        // observes DataStore to keep userAllergens updated
+        // Observa el DataStore para mantener los alérgenos actualizados
         val settingsRepository = SettingsRepository(applicationContext)
         lifecycleScope.launch {
             settingsRepository.data.map { it.allergens }.collect { allergens ->
-                    userAllergens = allergens
-                }
+                userAllergens = allergens
+            }
         }
 
-        // observador de cambios del carrito
+        // Observa los cambios del carrito y lanza notificaciones de voz
         observeCartVoiceNotifications()
 
+        // Dibuja la interfaz principal
         setContent {
             RFIDCartAppTheme {
                 AppNav(cartViewModel = cartViewModel)
@@ -83,27 +84,30 @@ class MainActivity : ComponentActivity() {
         super.onPause()
     }
 
+    // Cierra el motor de TTS al destruir la actividad
     override fun onDestroy() {
         super.onDestroy()
         tts.shutdown()
     }
 
     @OptIn(FlowPreview::class)
+    // Observa cambios en el carrito y hace que el altavoz hable con el delta detectado
     private fun observeCartVoiceNotifications() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                var last: List<CartItem> = emptyList()
-                cartViewModel.items.debounce(200).distinctUntilChanged().collect { current ->
+                var last: List<CartItem> = emptyList() // estado anterior del carrito
+                cartViewModel.items
+                    .debounce(200) // espera brevemente para evitar spam de cambios
+                    .distinctUntilChanged() // ignora si la lista no cambió
+                    .collect { current ->
                         val delta = CartDeltaCalculator.compute(last, current)
                         if (!delta.isEmpty()) {
                             val total = cartViewModel.totalPrice()
                             speaker.ensureLanguage(Locale.getDefault())
-                            speaker.speakDelta(
-                                delta, total
-                            )  // dice el total después de los cambios
+                            speaker.speakDelta(delta, total) // lee en voz alta los cambios
                             last = current
                         } else {
-                            // Sin cambios: no hablar y no actualizamos 'last' para seguir comparando correctamente
+                            // Sin cambios: actualiza igualmente el estado
                             last = current
                         }
                     }
@@ -111,12 +115,14 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    // Resultado de la petición de permiso de notificaciones
     private val requestNotifPermission = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
-        // log
+        // aquí se podría registrar en logs si fue concedido o no
     }
 
+    // Comprueba y pide permiso de notificaciones (Android 13+)
     private fun ensureNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
@@ -127,5 +133,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
 }

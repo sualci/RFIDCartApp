@@ -81,7 +81,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.0")
     implementation("com.google.accompanist:accompanist-navigation-animation:0.34.0")
     implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
-    implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
     // implementation("org.eclipse.paho:org.eclipse.paho.android.service:1.1.1")
     implementation("com.hivemq:hivemq-mqtt-client:1.3.3")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")

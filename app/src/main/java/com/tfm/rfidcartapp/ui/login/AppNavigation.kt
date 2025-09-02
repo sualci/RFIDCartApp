@@ -38,14 +38,15 @@ import com.tfm.rfidcartapp.ui.cart.CartViewModel
 
 @Composable
 fun AppNav(cartViewModel: CartViewModel) {
-    val navController = rememberNavController()
-    var isLoggedIn by rememberSaveable { mutableStateOf(false) }
+    val navController = rememberNavController() // controlador de navegación
+    var isLoggedIn by rememberSaveable { mutableStateOf(false) } // estado de login
 
-    val bottomBarHeight = 80.dp
+    val bottomBarHeight = 80.dp // altura reservada para la barra inferior
 
+    // Cambia entre pantallas según el estado de login
     Crossfade(targetState = isLoggedIn, label = "auth-crossfade") { logged ->
         if (!logged) {
-            // LOGIN UI
+            // UI de login
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background
@@ -53,10 +54,10 @@ fun AppNav(cartViewModel: CartViewModel) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     LoginScreen(
                         onStartClick = {
-                            isLoggedIn = true
+                            isLoggedIn = true // cambia a app al pulsar el botón
                         }
                     )
-                    // Reserve space for future bottom bar to avoid jump
+                    // Espacio reservado para la barra inferior futura
                     Spacer(
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
@@ -66,26 +67,26 @@ fun AppNav(cartViewModel: CartViewModel) {
                 }
             }
         } else {
-            // APP UI (cart/settings)
+            // UI principal de la app (carrito / ajustes)
             Scaffold(
-                bottomBar = { BottomNavigationBar(navController) }
+                bottomBar = { BottomNavigationBar(navController) } // barra inferior
             ) { innerPadding ->
                 NavHost(
                     navController = navController,
-                    startDestination = "cart",
+                    startDestination = "cart", // pantalla inicial
                     modifier = Modifier.padding(innerPadding)
                 ) {
-                    composable("cart") { CartRoute(cartViewModel = cartViewModel) }
-                    composable("settings") { SettingsRoute() }
+                    composable("cart") { CartRoute(cartViewModel = cartViewModel) } // ruta carrito
+                    composable("settings") { SettingsRoute() } // ruta ajustes
                 }
             }
         }
     }
 }
 
-
 @Composable
 fun BottomNavigationBar(navController: NavController) {
+    // Definición de ítems de la barra inferior
     val items = listOf(
         BottomNavItem(stringResource(id = R.string.cart_title), "cart", Icons.Filled.ShoppingCart),
         BottomNavItem(
@@ -98,7 +99,7 @@ fun BottomNavigationBar(navController: NavController) {
         val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
         items.forEach { item ->
             NavigationBarItem(
-                selected = currentRoute == item.route,
+                selected = currentRoute == item.route, // resalta el ítem activo
                 onClick = {
                     navController.navigate(item.route) {
                         popUpTo(navController.graph.startDestinationId) { saveState = true }
@@ -106,11 +107,11 @@ fun BottomNavigationBar(navController: NavController) {
                         restoreState = true
                     }
                 },
-                icon = { Icon(item.icon, contentDescription = item.label) }
+                icon = { Icon(item.icon, contentDescription = item.label) } // icono del ítem
             )
-
         }
     }
 }
 
+// Datos de cada ítem de navegación inferior
 data class BottomNavItem(val label: String, val route: String, val icon: ImageVector)
