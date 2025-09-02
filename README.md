@@ -1,4 +1,4 @@
-# Android App – Smart Shopping Cart
+# Android App – RFID Cart App
 
 Este repositorio inclúe a aplicación Android que funciona como interface de usuario para o sistema de carro intelixente con tecnoloxía RFID/NFC.
 
